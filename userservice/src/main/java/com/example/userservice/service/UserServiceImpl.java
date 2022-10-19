@@ -6,13 +6,14 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.userservice.dto.UserDto;
-import com.example.userservice.entity.UserEntity;
-import com.example.userservice.repository.UserRepository;
+import com.example.userservice.jpa.User;
+import com.example.userservice.jpa.UserRepository;
 import com.example.userservice.vo.ResponseOrder;
 
 import lombok.RequiredArgsConstructor;
@@ -20,50 +21,71 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
 	private final UserRepository repository;
-
 	private final BCryptPasswordEncoder passwordEncoder;
 
-	@Override
 	public UserDto createUser(UserDto userDto) {
+
 		userDto.setUserId(UUID.randomUUID().toString());
 
 		ModelMapper modelMapper = new ModelMapper();
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-		UserEntity userEntity = modelMapper.map(userDto, UserEntity.class);
-		userEntity.setEncryptedPwd(passwordEncoder.encode(userDto.getPwd()));
-
-		repository.save(userEntity);
+		User userEntity = modelMapper.map(userDto, User.class);
+		userEntity.setEncryptedPwd(this.passwordEncoder.encode(userDto.getPwd()));
+		this.repository.save(userEntity);
 
 		return modelMapper.map(userEntity, UserDto.class);
 	}
 
-	@Override
 	public UserDto getUserByUserId(String userId) {
-		UserEntity userEntity = repository.findByUserId(userId);
+
+		User userEntity = this.repository.findByUserId(userId);
 
 		if (userEntity == null) {
 			throw new UsernameNotFoundException("user not found");
+		} else {
+
+			ModelMapper modelMapper = new ModelMapper();
+			modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+			UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+
+			List<ResponseOrder> orders = new ArrayList();
+			userDto.setOrders(orders);
+
+			return userDto;
 		}
-
-		ModelMapper modelMapper = new ModelMapper();
-		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-
-		UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-
-		List<ResponseOrder> orders = new ArrayList<>();
-		userDto.setOrders(orders);
-
-		return userDto;
 	}
 
-	@Override
-	public Iterable<UserEntity> getUserByAll() {
-
-		Iterable<UserEntity> userEntities = repository.findAll();
-
-		return userEntities;
+	public Iterable<User> getUserByAll() {
+		return this.repository.findAll();
 	}
+
+	public UserDto getUserByEmail(String email) {
+
+		User userEntity = this.repository.findByEmail(email);
+
+		if (userEntity == null) {
+			throw new UsernameNotFoundException("user not found");
+		} else {
+			ModelMapper modelMapper = new ModelMapper();
+			modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+			return modelMapper.map(userEntity, UserDto.class);
+		}
+	}
+
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User userEntity = this.repository.findByEmail(username);
+		if (userEntity == null) {
+			throw new UsernameNotFoundException(username);
+		} else {
+			return new org.springframework.security.core.userdetails.User(
+				userEntity.getEmail(),
+				userEntity.getEncryptedPwd(),
+				true, true, true, true,
+				new ArrayList());
+		}
+	}
+
 }

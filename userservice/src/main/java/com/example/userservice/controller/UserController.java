@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.userservice.dto.UserDto;
-import com.example.userservice.entity.UserEntity;
+import com.example.userservice.jpa.User;
 import com.example.userservice.service.UserService;
 import com.example.userservice.vo.Greeting;
 import com.example.userservice.vo.RequestUser;
@@ -25,7 +24,6 @@ import com.example.userservice.vo.ResponseUser;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/user-service")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -61,9 +59,9 @@ public class UserController {
 	@GetMapping("/users")
 	public ResponseEntity<List<ResponseUser>> getUsers() {
 
-		Iterable<UserEntity> users = userService.getUserByAll();
+		Iterable<User> users = userService.getUserByAll();
 		List<ResponseUser> result = new ArrayList<>();
-		
+
 		ModelMapper modelMapper = new ModelMapper();
 
 		users.forEach(u -> {
