@@ -1,6 +1,5 @@
 # Spring cloud bootstrap. configuration server 연동을 위해 application.yml 파일보다 먼저 읽히게 된다.
 
-
 spring:
   cloud:
     config:
