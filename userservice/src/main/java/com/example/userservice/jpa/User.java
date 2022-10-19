@@ -1,4 +1,4 @@
-package com.example.userservice.entity;
+package com.example.userservice.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "tbl_users")
-public class UserEntity {
+public class User {
 
 	@Id
 	@GeneratedValue

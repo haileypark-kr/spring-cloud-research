@@ -16,10 +16,31 @@ spring:
             preLogger: true
             postLogger: true
       routes:
-        - id: user-service
+        - id: user-service-login # authorization header filter 미적용
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie # 항상 첫 요청처럼 처리하기 위해
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service-signup # authorization header filter 미적용
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/users
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service-others # authorization header filter 적용
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user-service/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
         - id: catalog-service
           uri: lb://CATALOG-SERVICE
           predicates:
@@ -28,28 +49,6 @@ spring:
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
-#        - id: first-service
-#          uri: lb://MY-FIRST-SERVICE
-#          predicates:
-#            - Path=/first-service/**
-#          filters:
-#            - AddRequestHeader=first-request, first-request-header2
-#            - AddResponseHeader=first-response, first-response-header2
-#            - CustomFilter
-#        - id: second-service
-#          uri: lb://MY-SECOND-SERVICE
-#          predicates:
-#            - Path=/second-service/**
-#          filters:
-#            - AddRequestHeader=second-request, second-request-header2
-#            - AddResponseHeader=second-response, second-response-header2
-#            - CustomFilter
-#            - name: LoggingFilter
-#              args:
-#                baseMessage: Spring Cloud Gateway LoggingFilter
-#                preLogger: true
-#                postLogger: true
-
 
 eureka:
   instance:
@@ -59,3 +58,7 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+token:
+  expiration-time: 86400000 # 1 day to milliseconds
+  secret: user_token
