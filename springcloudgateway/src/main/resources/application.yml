@@ -32,6 +32,14 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service-actuator # authorization header filter 미적용
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/actuator/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: user-service-others # authorization header filter 적용
           uri: lb://USER-SERVICE
           predicates:
@@ -64,4 +72,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans
+        include: refresh, health, beans, httptrace
