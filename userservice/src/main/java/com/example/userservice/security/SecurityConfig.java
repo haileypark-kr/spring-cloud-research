@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.permitAll()
 
 			.antMatchers("/**")
-			.hasIpAddress("192.168.0.7")
+			.hasIpAddress("172.30.1.53")
 
 			.and()
 			.addFilter(this.getAuthenticationFilter());
