@@ -5,19 +5,27 @@ spring:
   application:
     name: config-service
 
-
   cloud:
     config:
       server:
         native:
-          search-locations: file://${user.home}/localconfigs # 로컬 파일로 config 가져오는 방법.
-            #        git:
-            #          uri: https://github.com/haileypark-kr/spring-cloud-research-configs
-            #          username: haileypark-kr
-            #          password: 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 # private repo인 경우 github에서 personal token 생성 필요.
+          search-locations: file:/D:/code/study/spring-cloud/configs/ # 로컬 파일로 config 가져오는 방법.
+#        git:
+#          uri: https://github.com/haileypark-kr/spring-cloud-research-configs
+#          username: haileypark-kr
+#          password: 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 # private repo인 경우 github에서 personal token 생성 필요.
 
   profiles:
     active: native
 
-#          uri: file:///Users/soohyun/development/study/inflearn/Spring Cloud and MSA - 이도원/configs
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, busrefresh

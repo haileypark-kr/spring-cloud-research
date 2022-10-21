@@ -15,12 +15,19 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/development/h2/springcloud
+    url: jdbc:h2:tcp://localhost/./springcloud
     username: sa
+    password: 1
 
   jpa:
     hibernate:
       ddl-auto: update
+
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
 
 eureka:
   instance:
@@ -35,7 +42,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans
+        include: refresh, health, beans, busrefresh
 
 greeting:
   message: Hihi~

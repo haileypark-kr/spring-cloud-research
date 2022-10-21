@@ -1,0 +1,7 @@
+token:
+  expiration-time: 860000
+  secret: 1231231232222
+
+
+gateway:
+  ip: rp1015108310.corp.ktad.kt.com11
