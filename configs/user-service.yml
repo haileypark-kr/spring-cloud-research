@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/./springcloud
+    username: sa
+    password: '{cipher}44b64eeaa8ba9bee0818bd80cf4855047dbe9a5d0ab9e4b7cce58146ba3f2612'
