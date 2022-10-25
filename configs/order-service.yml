@@ -1,6 +1,6 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3308/users?characterEncoding=UTF-8&allowMultiQueries=true
+    url: jdbc:mariadb://localhost:3307/orders?characterEncoding=UTF-8&allowMultiQueries=true
     username: WEBADMIN
     password: '{cipher}d9ab769b687df942a3ac315f69640befbcf0989d4e6756919e97ce25b9bb4105'

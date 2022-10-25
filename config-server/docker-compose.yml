@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  order-mariadb:
+    container_name: springcloud-orderservice-mariadb
+    image: mariadb:10.5.13-focal
+    ports:
+      - 3307:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: new1234!
+      MYSQL_DATABASE: orders
+      MYSQL_USER: WEBADMIN
+      MYSQL_PASSWORD: WEBADMIN123
+      TZ: "Asia/Seoul"
+    volumes:
+      - ./localdb/order:/docker-entrypoint-initdb.d/ # create table, init data 어디에 있는지 문의.
+      - ./localdb/mariadb.cnf:/etc/mysql/conf.d/custom.cnf
+  user-mariadb:
+    container_name: springcloud-userservice-mariadb
+    image: mariadb:10.5.13-focal
+    ports:
+      - 3308:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: new1234!
+      MYSQL_DATABASE: users
+      MYSQL_USER: WEBADMIN
+      MYSQL_PASSWORD: WEBADMIN123
+      TZ: "Asia/Seoul"
+    volumes:
+      - ./localdb/user:/docker-entrypoint-initdb.d/ # create table, init data 어디에 있는지 문의.
+      - ./localdb/mariadb.cnf:/etc/mysql/conf.d/custom.cnf

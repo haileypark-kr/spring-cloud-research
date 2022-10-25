@@ -6,10 +6,7 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,19 +14,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.userservice.dto.UserDto;
+import com.example.userservice.feign.OrderServiceClient;
 import com.example.userservice.jpa.User;
 import com.example.userservice.jpa.UserRepository;
 import com.example.userservice.vo.ResponseOrder;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 	private final UserRepository repository;
 	private final BCryptPasswordEncoder passwordEncoder;
 
 	private final RestTemplate restTemplate;
+
+	private final OrderServiceClient orderServiceClient;
+
 	private final Environment env;
 
 	public UserDto createUser(UserDto userDto) {
@@ -61,14 +64,18 @@ public class UserServiceImpl implements UserService {
 			List<ResponseOrder> orders = new ArrayList();
 
 			// order service에서 usreId 로 주문 목록 가져오기
-			// 1. RestTemplate 사용.
-			String orderUrl = String.format(env.getProperty("order-service.url"), userId);
-			ResponseEntity<List<ResponseOrder>> responseEntity = restTemplate.exchange(orderUrl, HttpMethod.GET, null,
-				new ParameterizedTypeReference<List<ResponseOrder>>() {
-					// Generic 사용하려면 ParameterizedTypeReference써야 함.
-				});
+			/** 1. RestTemplate 사용.
+			 String orderUrl = String.format(env.getProperty("order-service.url"), userId);
+			 ResponseEntity<List<ResponseOrder>> responseEntity = restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+			 new ParameterizedTypeReference<List<ResponseOrder>>() {
+			 // Generic 사용하려면 ParameterizedTypeReference써야 함.
+			 });
 
-			orders = responseEntity.getBody();
+			 orders = responseEntity.getBody();
+			 **/
+
+			/** 2. Feign Client 사용 **/
+			orders = orderServiceClient.getOrders(userId); // ErrorDecoder 있으면 try catch 문 필요 없음.
 			userDto.setOrders(orders);
 
 			return userDto;
