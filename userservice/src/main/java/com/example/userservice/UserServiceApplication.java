@@ -2,6 +2,7 @@ package com.example.userservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +16,7 @@ public class UserServiceApplication {
 	}
 
 	@Bean
+	@LoadBalanced // microservice 이름으로 호출하려면 이거 붙여줘야 함.
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}

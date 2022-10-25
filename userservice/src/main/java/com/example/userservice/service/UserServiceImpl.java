@@ -61,10 +61,11 @@ public class UserServiceImpl implements UserService {
 			List<ResponseOrder> orders = new ArrayList();
 
 			// order service에서 usreId 로 주문 목록 가져오기
-			// 1. RestTemplate 사용
-			String orderUrl = env.getProperty("order-service.url");
+			// 1. RestTemplate 사용.
+			String orderUrl = String.format(env.getProperty("order-service.url"), userId);
 			ResponseEntity<List<ResponseOrder>> responseEntity = restTemplate.exchange(orderUrl, HttpMethod.GET, null,
 				new ParameterizedTypeReference<List<ResponseOrder>>() {
+					// Generic 사용하려면 ParameterizedTypeReference써야 함.
 				});
 
 			orders = responseEntity.getBody();

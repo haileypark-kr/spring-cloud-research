@@ -8,4 +8,5 @@ gateway:
 
 
 order-service:
-  url: http://localhost:8000/order-service/%s/orders  # %s에는 userId가 들어감
+  url: http://order-service/order-service/%s/orders   # 앞의 order-service는 order service의 microservice 이름. --> RestTemplate에서 @LoadBalaced 붙여줘야 함.
+    # %s에는 userId가 들어감
