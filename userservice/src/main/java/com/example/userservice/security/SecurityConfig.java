@@ -32,6 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/actuator/**")
 			.permitAll()
 
+			.antMatchers("/redispub")
+			.permitAll()
+
 			.antMatchers("/**")
 			.hasIpAddress(environment.getProperty("gateway.ip"))
 

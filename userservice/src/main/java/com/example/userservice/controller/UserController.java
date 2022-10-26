@@ -2,6 +2,7 @@ package com.example.userservice.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.userservice.dto.ScenarioDto;
 import com.example.userservice.dto.UserDto;
 import com.example.userservice.jpa.User;
+import com.example.userservice.service.RedisPubService;
 import com.example.userservice.service.UserService;
 import com.example.userservice.vo.Greeting;
 import com.example.userservice.vo.RequestUser;
@@ -31,6 +34,8 @@ public class UserController {
 	private final UserService userService;
 
 	private final Environment env;
+
+	private final RedisPubService redisPubService;
 
 	@GetMapping("/health_check")
 	public String status() {
@@ -87,4 +92,12 @@ public class UserController {
 		return ResponseEntity.ok(responseUser);
 	}
 
+	@PostMapping("/redispub")
+	public ResponseEntity<ScenarioDto> redisPublishTest(@RequestBody ScenarioDto scenarioDto) {
+
+		scenarioDto.setLearnId(UUID.randomUUID().toString());
+		redisPubService.sendMessage(scenarioDto);
+
+		return ResponseEntity.ok(scenarioDto);
+	}
 }
