@@ -78,8 +78,7 @@ public class UserServiceImpl implements UserService {
 			 */
 
 			/* 2. Feign Client ErrorDecoder 사용
-			List<ResponseOrder> orders = new ArrayList();
-			orders = orderServiceClient.getOrders(userId); // ErrorDecoder 있으면 try catch 문 필요 없음.
+			List<ResponseOrder> orders = orderServiceClient.getOrders(userId); // ErrorDecoder 있으면 try catch 문 필요 없음.
 			*/
 
 			/* 3. Cirbuit breaker 사용. 오류 발생 시 빈 리스트 응답. */
