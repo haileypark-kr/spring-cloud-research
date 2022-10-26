@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,6 +37,8 @@ public class UserServiceImpl implements UserService {
 
 	private final Environment env;
 
+	private final CircuitBreakerFactory circuitBreakerFactory;
+
 	public UserDto createUser(UserDto userDto) {
 
 		userDto.setUserId(UUID.randomUUID().toString());
@@ -61,10 +65,9 @@ public class UserServiceImpl implements UserService {
 			modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 			UserDto userDto = modelMapper.map(userEntity, UserDto.class);
 
-			List<ResponseOrder> orders = new ArrayList();
-
 			// order service에서 usreId 로 주문 목록 가져오기
-			/** 1. RestTemplate 사용.
+
+			/* 1. RestTemplate 사용.
 			 String orderUrl = String.format(env.getProperty("order-service.url"), userId);
 			 ResponseEntity<List<ResponseOrder>> responseEntity = restTemplate.exchange(orderUrl, HttpMethod.GET, null,
 			 new ParameterizedTypeReference<List<ResponseOrder>>() {
@@ -72,10 +75,18 @@ public class UserServiceImpl implements UserService {
 			 });
 
 			 orders = responseEntity.getBody();
-			 **/
+			 */
 
-			/** 2. Feign Client 사용 **/
+			/* 2. Feign Client ErrorDecoder 사용
+			List<ResponseOrder> orders = new ArrayList();
 			orders = orderServiceClient.getOrders(userId); // ErrorDecoder 있으면 try catch 문 필요 없음.
+			*/
+
+			/* 3. Cirbuit breaker 사용. 오류 발생 시 빈 리스트 응답. */
+			CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
+			List<ResponseOrder> orders = circuitbreaker.run(() -> orderServiceClient.getOrders(userId),
+				throwable -> new ArrayList<>());
+
 			userDto.setOrders(orders);
 
 			return userDto;

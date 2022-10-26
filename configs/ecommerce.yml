@@ -4,7 +4,7 @@ token:
 
 
 gateway:
-  ip: 172.30.1.25
+  ip: 211.250.199.221
 
 
 order-service:
