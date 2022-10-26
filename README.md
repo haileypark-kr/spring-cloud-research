@@ -14,8 +14,10 @@
    - 클라이언트 요청을 적절한 서비스로 라우팅하거나 필터를 적용하여 헤더에 특정 정보를 추가할 수 있다.
 
 3. [Configuration Service](http://localhost:8888/ecommerce/default) (spring-cloud-config-server, spring-cloud-starter-bus-amqp, spring-boot-starter-actuator)
-   - 분산 시스템에서 환경설정을 외부로 분리하여 관리할 수 있는 기능을 제공한다.
+   - 분산 시스템에서 환경설정을 외부로 분리하여 관리할 수 있는 기능을 제공한다. 
    - 운영중에 서버 빌드 및 배포 없이 환경설정 변경 가능 (단, 일부 설정에 따라 애플리케이션 재기동 필요할 수 있음)
+   - Spring cloud bus를 통해 설정 값 변경 시 브로드캐스트할 수 있다.
+     - AMQP, Kafka, Redis 지원.
 
 4. User Service (spring-cloud-starter-openfeign, spring-cloud-starter-circuitbreaker-resilience4j)
    - 사용자 관리 서비스
