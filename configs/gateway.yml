@@ -49,4 +49,5 @@ spring:
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
-            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
+          filters:
+          - RewritePath=/order-service/(?<segment>.*), /$\{segment}

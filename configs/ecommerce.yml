@@ -8,7 +8,7 @@ gateway:
 
 
 order-service:
-  url: http://order-service//%s/orders  # 앞의 order-service는 order service의 microservice 이름. --> RestTemplate에서 @LoadBalaced 붙여줘야 함.
+  url: http://order-service/%s/orders  # 앞의 order-service는 order service의 microservice 이름. --> RestTemplate에서 @LoadBalaced 붙여줘야 함.
     # %s에는 userId가 들어감
   exception:
     order-is-empty: User's order is empty

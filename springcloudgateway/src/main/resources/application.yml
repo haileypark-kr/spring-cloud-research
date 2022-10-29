@@ -6,7 +6,7 @@ spring:
   application:
     name: gateway-service
 
-  # 아래 설정은 FilterConfig.java로 등록 가능
+  # >> 아래 설정은 configuration service에서 동적으로 관리.
   #  cloud:
   #    gateway:
   #      default-filters:

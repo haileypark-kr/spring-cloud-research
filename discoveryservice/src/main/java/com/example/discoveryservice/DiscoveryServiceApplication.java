@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 @SpringBootApplication
-@EnableEurekaServer
+@EnableEurekaServer // Service Discovery 서버로 띄우기 위한 설정.
 public class DiscoveryServiceApplication {
 
 	public static void main(String[] args) {
