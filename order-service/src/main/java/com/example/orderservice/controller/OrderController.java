@@ -26,9 +26,11 @@ import com.example.orderservice.vo.RequestOrder;
 import com.example.orderservice.vo.ResponseOrder;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
-@RequestMapping("/order-service")
+@RequestMapping
 @RequiredArgsConstructor
 public class OrderController {
 
@@ -46,6 +48,8 @@ public class OrderController {
 
 	@PostMapping("/{userId}/orders")
 	public ResponseEntity createOrder(@PathVariable("userId") String userId, @RequestBody RequestOrder requestOrder) {
+
+		log.info("=== before add order data");
 
 		ModelMapper mapper = new ModelMapper();
 		mapper.getConfiguration().setMatchingStrategy(STRICT);
@@ -66,12 +70,18 @@ public class OrderController {
 		orderProducer.send("tbl_orders", orderDto); // DB tbl_orders 테이블에 주문 데이터 보내기
 
 		ResponseOrder responseOrder = mapper.map(orderDto, ResponseOrder.class);
+
+		log.info("=== after add order data");
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
 
 	}
 
 	@GetMapping("/{userId}/orders")
-	public ResponseEntity<List<ResponseOrder>> getOrdersByUserId(@PathVariable("userId") String userId) {
+	public ResponseEntity<List<ResponseOrder>> getOrdersByUserId(@PathVariable("userId") String userId) throws
+		Exception {
+
+		log.info("=== before retreive order data");
 
 		Iterable<Order> orders = orderService.getOrdersByUserId(userId);
 		List<ResponseOrder> result = new ArrayList<>();
@@ -82,23 +92,17 @@ public class OrderController {
 			result.add(mapper.map(o, ResponseOrder.class));
 		});
 
+		/* 아래는 zipkin으로 오류 트래킹하기 위해서 임의로 장애 발생시킴. */
+		// try {
+		// 	Thread.sleep(1000);
+		// 	log.warn("장애 발생");
+		// 	throw new Exception("장애 발생!");
+		// } catch (InterruptedException e) {
+		// 	log.error(e.getMessage());
+		// }
+
+		log.info("=== after retreive order data");
+
 		return ResponseEntity.ok(result);
 	}
-	//
-	// @GetMapping("/{userId}/order/{orderId}")
-	// public ResponseEntity getOrderByOrderId(@PathVariable("userId") String userId,
-	// 	@PathVariable("orderId") String orderId) {
-	//
-	// 	Iterable<Order> orders = orderService.getOrdersByUserId(userId);
-	// 	List<ResponseOrder> result = new ArrayList<>();
-	//
-	// 	ModelMapper mapper = new ModelMapper();
-	//
-	// 	orders.forEach(o -> {
-	// 		result.add(mapper.map(o, ResponseOrder.class));
-	// 	});
-	//
-	// 	return ResponseEntity.ok(result);
-	// }
-
 }

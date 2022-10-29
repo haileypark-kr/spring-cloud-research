@@ -82,9 +82,13 @@ public class UserServiceImpl implements UserService {
 			*/
 
 			/* 3. Cirbuit breaker 사용. 오류 발생 시 빈 리스트 응답. */
+			log.info("=== before call order microservice");
+
 			CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
 			List<ResponseOrder> orders = circuitbreaker.run(() -> orderServiceClient.getOrders(userId),
 				throwable -> new ArrayList<>());
+
+			log.info("=== after call order microservice");
 
 			userDto.setOrders(orders);
 
