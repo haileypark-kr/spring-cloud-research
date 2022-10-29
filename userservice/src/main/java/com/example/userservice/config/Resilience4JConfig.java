@@ -18,13 +18,14 @@ public class Resilience4JConfig {
 	public Customizer<Resilience4JCircuitBreakerFactory> globalCustomConfiguration() {
 
 		CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
-			.failureRateThreshold(4)
-			.waitDurationInOpenState(Duration.ofMillis(1000))
-			.slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED)
+			.failureRateThreshold(4) // 서킷브레이커 오픈을 결정하는 failure rate threshold percentage
+			.waitDurationInOpenState(Duration.ofMillis(1000)) // 서킷브레이커 오픈 상태를 유지하는 지속 시간
+			.slidingWindowType(
+				CircuitBreakerConfig.SlidingWindowType.COUNT_BASED) // 카운트 기반: 마지막 N번의 호출 결과 집계, 시간 기반: 마지막 N초 동안의 호출 결과 집계
 			.slidingWindowSize(2)
 			.build();
 		TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
-			.timeoutDuration(Duration.ofSeconds(4))
+			.timeoutDuration(Duration.ofSeconds(4)) // 호출 타임아웃 설정 가능
 			.build();
 
 		return factory -> factory.configureDefault(
