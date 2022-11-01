@@ -28,6 +28,11 @@ spring:
     sampler:
       probability: 1.0
 
+  redis:
+    host: 127.0.0.1
+    port: 16380
+
+
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}

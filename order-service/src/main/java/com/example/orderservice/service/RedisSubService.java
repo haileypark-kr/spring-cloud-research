@@ -11,8 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Service
 @Slf4j
+@Service
 public class RedisSubService implements MessageListener {
 
 	@Override
@@ -22,8 +22,8 @@ public class RedisSubService implements MessageListener {
 			ObjectMapper mapper = new ObjectMapper();
 
 			ScenarioDto chatMessage = mapper.readValue(message.getBody(), ScenarioDto.class);
-			
-			log.info("받은 메시지 = " + chatMessage.toString());
+
+			log.info("Order service -> Redis subscribed : {}", chatMessage);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

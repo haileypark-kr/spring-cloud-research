@@ -30,3 +30,17 @@ services:
     volumes:
       - ./localdb/user:/docker-entrypoint-initdb.d/ # create table, init data 어디에 있는지 문의.
       - ./localdb/mariadb.cnf:/etc/mysql/conf.d/custom.cnf
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - 16380:6379
+    environment:
+      TZ: "Asia/Seoul"
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    environment:
+      TZ: "Asia/Seoul"
